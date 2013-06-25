@@ -6,14 +6,16 @@ public class DistanceResult {
 	private String pdbID;
 	private int modelNumber;
 	private String chainID;
+	private String groupName;
 	private ResidueNumber residueNumber;
 	private int serialNumber;
-	
+
 	public DistanceResult(String pdbID, int modelNumber, String chainID,
-			ResidueNumber residueNumber, int serialNumber) {
+			String groupName, ResidueNumber residueNumber, int serialNumber) {
 		this.pdbID = pdbID;
 		this.modelNumber = modelNumber;
 		this.chainID = chainID;
+		this.groupName = groupName;
 		this.residueNumber = residueNumber;
 		this.serialNumber = serialNumber;
 	}
@@ -28,6 +30,10 @@ public class DistanceResult {
 
 	public String getChainID() {
 		return chainID;
+	}
+
+	public String getGroupName() {
+		return groupName;
 	}
 
 	public ResidueNumber getResidueNumber() {
