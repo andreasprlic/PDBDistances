@@ -3,25 +3,19 @@ package com.ulyssecarion.pdb.distances;
 import org.biojava.bio.structure.ResidueNumber;
 
 public class AtomInformation {
-	private String pdbID;
 	private int modelNumber;
 	private String chainID;
 	private String groupName;
 	private ResidueNumber residueNumber;
 	private int serialNumber;
 
-	public AtomInformation(String pdbID, int modelNumber, String chainID,
-			String groupName, ResidueNumber residueNumber, int serialNumber) {
-		this.pdbID = pdbID;
+	public AtomInformation(int modelNumber, String chainID, String groupName,
+			ResidueNumber residueNumber, int serialNumber) {
 		this.modelNumber = modelNumber;
 		this.chainID = chainID;
 		this.groupName = groupName;
 		this.residueNumber = residueNumber;
 		this.serialNumber = serialNumber;
-	}
-
-	public String getPdbID() {
-		return pdbID;
 	}
 
 	public int getModelNumber() {

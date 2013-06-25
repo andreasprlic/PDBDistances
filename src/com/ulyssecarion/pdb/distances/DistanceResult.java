@@ -1,7 +1,7 @@
 package com.ulyssecarion.pdb.distances;
 
 public class DistanceResult {
-	private String pdbID; // XXX this is redundant w/ AtomInformation
+	private String pdbID;
 	private double distance;
 	private AtomInformation origin;
 	private AtomInformation target;
