@@ -3,8 +3,7 @@ package com.ulyssecarion.pdb.distances;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.biojava.bio.structure.ResidueNumber;
-
+// TODO decide whether I should use this or a bunch of subclasses for each level.
 public class DistanceDataTree {
 	private DistanceResult result;
 	private Map<String, DistanceDataTree> leaves;
