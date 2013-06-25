@@ -2,7 +2,7 @@ package com.ulyssecarion.pdb.distances;
 
 import org.biojava.bio.structure.ResidueNumber;
 
-public class DistanceResult {
+public class AtomInformation {
 	private String pdbID;
 	private int modelNumber;
 	private String chainID;
@@ -10,7 +10,7 @@ public class DistanceResult {
 	private ResidueNumber residueNumber;
 	private int serialNumber;
 
-	public DistanceResult(String pdbID, int modelNumber, String chainID,
+	public AtomInformation(String pdbID, int modelNumber, String chainID,
 			String groupName, ResidueNumber residueNumber, int serialNumber) {
 		this.pdbID = pdbID;
 		this.modelNumber = modelNumber;
