@@ -1,5 +1,7 @@
 package com.ulyssecarion.pdb.distances;
 
+import org.biojava.bio.structure.Atom;
+
 public class DistanceResult {
 	private String pdbID;
 	private double distance;
@@ -12,6 +14,12 @@ public class DistanceResult {
 		this.distance = distance;
 		this.origin = origin;
 		this.target = target;
+	}
+
+	public DistanceResult(String pdbID, double distance, Atom origin,
+			Atom target) {
+		this(pdbID, distance, new AtomInformation(origin), new AtomInformation(
+				target));
 	}
 
 	public String getPdbID() {
@@ -28,5 +36,10 @@ public class DistanceResult {
 
 	public AtomInformation getTarget() {
 		return target;
+	}
+	
+	@Override
+	public String toString() {
+		return origin + " -> " + target + " @ " + distance + "A";
 	}
 }

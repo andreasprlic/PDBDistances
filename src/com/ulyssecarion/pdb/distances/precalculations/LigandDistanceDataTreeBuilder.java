@@ -1,5 +1,23 @@
 package com.ulyssecarion.pdb.distances.precalculations;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.biojava.bio.structure.Atom;
+import org.biojava.bio.structure.Calc;
+import org.biojava.bio.structure.Chain;
+import org.biojava.bio.structure.Element;
+import org.biojava.bio.structure.Group;
+import org.biojava.bio.structure.Structure;
+import org.biojava.bio.structure.StructureException;
+import org.biojava.bio.structure.align.util.AtomCache;
+import org.biojava.bio.structure.io.FileParsingParameters;
+import org.biojava3.structure.StructureIO;
+
+import com.ulyssecarion.pdb.distances.DistanceDataTree;
+import com.ulyssecarion.pdb.distances.DistanceResult;
+
 /**
  * Creates a data tree for a single PDB entry, but limiting origin groups to
  * strictly ligands.
@@ -12,4 +30,91 @@ public class LigandDistanceDataTreeBuilder {
 	 * recorded.
 	 */
 	private static final double MAX_DISTANCE = 8.0;
+
+	private static AtomCache cache;
+
+	static {
+		cache = new AtomCache();
+		FileParsingParameters params = cache.getFileParsingParams();
+		params.setStoreEmptySeqRes(true);
+		params.setAlignSeqRes(true);
+		params.setLoadChemCompInfo(true);
+	}
+
+	public static void main(String[] args) {
+		System.out.println(buildTreeFor("101D").get(" MG").get(Element.Mg)
+				.get("MG").get(" DG").get(Element.O).get("O6"));
+	}
+
+	public static DistanceDataTree buildTreeFor(String pdbID) {
+		
+	
+		StructureIO.setAtomCache(cache);
+
+		
+		//ChemCompGroupFactory.setChemCompProvider(new AllChemCompProvider());
+		
+		DistanceDataTree distanceDataTree = new DistanceDataTree();
+
+		int bioAssemblyCount = StructureIO.getNrBiologicalAssemblies(pdbID);
+		int bioAssemblyId = bioAssemblyCount > 0 ? 1 : 0;
+
+		Structure structure = null;
+		try {
+			
+			structure = StructureIO.getBiologicalAssembly(pdbID, bioAssemblyId);
+		} catch (IOException | StructureException e) {
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+
+		List<Atom> atoms = getAtoms(structure);
+		List<Group> ligands = getLigands(structure);
+
+		try {
+			for (Atom a : atoms) {
+				if (ligands.contains(a.getGroup())) {
+					for (Atom b : atoms) {
+						double distance = Calc.getDistance(a, b);
+
+						if (a.getGroup() != b.getGroup()
+								&& !b.getGroup().isWater()
+								&& distance < MAX_DISTANCE) {
+							DistanceResult dr = new DistanceResult(pdbID,
+									distance, a, b);
+							distanceDataTree.add(a, b, dr);
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return distanceDataTree;
+	}
+
+	private static List<Atom> getAtoms(Structure s) {
+		List<Atom> atoms = new ArrayList<>();
+
+		List<Chain> model = s.getModel(0); // XXX assure this is correct
+		for (Chain chain : model) {
+			for (Group group : chain.getAtomGroups()) {
+				atoms.addAll(group.getAtoms());
+			}
+		}
+
+		return atoms;
+	}
+
+	private static List<Group> getLigands(Structure s) {
+		List<Group> ligands = new ArrayList<>();
+
+		List<Chain> model = s.getModel(0);
+		for (Chain chain : model) {
+			ligands.addAll(chain.getAtomLigands());
+		}
+
+		return ligands;
+	}
 }

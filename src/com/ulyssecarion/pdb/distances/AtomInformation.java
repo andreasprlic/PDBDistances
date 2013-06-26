@@ -1,25 +1,25 @@
 package com.ulyssecarion.pdb.distances;
 
+import org.biojava.bio.structure.Atom;
 import org.biojava.bio.structure.ResidueNumber;
 
 public class AtomInformation {
-	private int modelNumber;
 	private String chainID;
 	private String groupName;
 	private ResidueNumber residueNumber;
 	private int serialNumber;
 
-	public AtomInformation(int modelNumber, String chainID, String groupName,
+	public AtomInformation(String chainID, String groupName,
 			ResidueNumber residueNumber, int serialNumber) {
-		this.modelNumber = modelNumber;
 		this.chainID = chainID;
 		this.groupName = groupName;
 		this.residueNumber = residueNumber;
 		this.serialNumber = serialNumber;
 	}
 
-	public int getModelNumber() {
-		return modelNumber;
+	public AtomInformation(Atom a) {
+		this(a.getGroup().getChainId(), a.getGroup().getPDBName(), a.getGroup()
+				.getResidueNumber(), a.getPDBserial());
 	}
 
 	public String getChainID() {
@@ -36,5 +36,10 @@ public class AtomInformation {
 
 	public int getSerialNumber() {
 		return serialNumber;
+	}
+	
+	@Override
+	public String toString() {
+		return groupName + " Chain: " + chainID + ", Res: " + residueNumber + ", Atom No: " + serialNumber;
 	}
 }
