@@ -10,6 +10,16 @@ import com.ulyssecarion.pdb.distances.DistanceDataTree.TargetElementTree;
 import com.ulyssecarion.pdb.distances.DistanceDataTree.TargetGroupTree;
 
 public class DistanceDataTreeSearcher {
+	/**
+	 * Looks for DistanceResults relevant to a given DistanceQuery made on a
+	 * DistanceDataTree.
+	 * 
+	 * @param dataTree
+	 *            the DistanceDataTree to search through.
+	 * @param query
+	 *            the DistanceQuery to use
+	 * @return a list of DistanceResults that match the given query.
+	 */
 	public static List<DistanceResult> search(DistanceDataTree dataTree,
 			DistanceQuery query) {
 		List<DistanceResult> candidates = new ArrayList<>();
@@ -37,7 +47,7 @@ public class DistanceDataTreeSearcher {
 				}
 			}
 		}
-		
+
 		return candidates;
 	}
 }

@@ -12,6 +12,13 @@ public class DistanceDataTreeBuilderDriver {
 	private static final int SAVE_EVERY = 1000;
 	private static final int START_AT = 14000;
 
+	/**
+	 * Builds a DistanceDataTree for every 1000 PDB IDs in the database. They
+	 * can later be deserialized, joined, and used to find entries by distances.
+	 * 
+	 * @param args
+	 * @throws Exception
+	 */
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new FileReader("pdbids.txt"));
 

@@ -16,6 +16,7 @@ import org.biojava3.structure.StructureIO;
 
 import com.ulyssecarion.pdb.distances.DistanceDataTree;
 import com.ulyssecarion.pdb.distances.DistanceResult;
+import com.ulyssecarion.pdb.distances.serialization.DistanceDataTreeSerializer;
 
 /**
  * Creates a data tree for a single PDB entry, but limiting origin groups to
@@ -43,7 +44,15 @@ public class LigandDistanceDataTreeBuilder {
 	public static void main(String[] args) {
 		
 	}
-	
+
+	/**
+	 * Adds information about a particular PDB entry to a DistanceDataTree.
+	 * 
+	 * @param dataTree
+	 *            the DistanceDataTree to add to
+	 * @param pdbID
+	 *            the PDB ID of the structure to add information about
+	 */
 	public static void buildTreeFor(DistanceDataTree dataTree, String pdbID) {
 		StructureIO.setAtomCache(cache);
 

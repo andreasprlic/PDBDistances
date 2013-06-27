@@ -19,6 +19,17 @@ import org.biojava.bio.structure.Element;
 // Target Atom Name -->
 // Result
 // The only remaining variable, the origin group name, is taken care of by DistanceDataTree itself.
+/**
+ * Handles the hierarchy of parameters involved in building and searching
+ * through the 6 parameters involved in finding a distance-based pair.
+ * 
+ * The six levels are each handled by DistanceDataTree or its static classes.
+ * They all return other static classes of DistanceDataTree except
+ * TargetAtomNameTree, which is at the bottom of the chain and simply returns
+ * DistanceResults.
+ * 
+ * @author Ulysse Carion
+ */
 public class DistanceDataTree implements Serializable {
 	private static final long serialVersionUID = 6028342478914501676L;
 	private final Map<String, OriginGroupTree> map;
@@ -26,16 +37,16 @@ public class DistanceDataTree implements Serializable {
 	public DistanceDataTree() {
 		map = new HashMap<>();
 	}
-	
+
 	// TODO : join(DistanceDataTree other)
-	
+
 	public List<DistanceResult> search(DistanceQuery query) {
 		return DistanceDataTreeSearcher.search(this, query);
 	}
 
 	public void add(Atom origin, Atom target, DistanceResult dr) {
-		add(origin.getGroup().getPDBName().trim(), origin.getElement(),
-				origin.getName().trim(), target.getGroup().getPDBName().trim(),
+		add(origin.getGroup().getPDBName().trim(), origin.getElement(), origin
+				.getName().trim(), target.getGroup().getPDBName().trim(),
 				target.getElement(), target.getName().trim(), dr);
 	}
 
@@ -51,13 +62,13 @@ public class DistanceDataTree implements Serializable {
 					dr));
 		}
 	}
-	
+
 	public List<OriginGroupTree> get(String originGroup) {
 		if (originGroup == null)
 			return getAll();
 		return Arrays.asList(map.get(originGroup));
 	}
-	
+
 	private List<OriginGroupTree> getAll() {
 		List<OriginGroupTree> children = new ArrayList<>();
 		for (String originGroup : map.keySet()) {
@@ -65,7 +76,7 @@ public class DistanceDataTree implements Serializable {
 		}
 		return children;
 	}
-	
+
 	public Set<String> getOriginGroupNames() {
 		return map.keySet();
 	}
@@ -107,7 +118,7 @@ public class DistanceDataTree implements Serializable {
 				return getAll();
 			return Arrays.asList(map.get(originElement));
 		}
-		
+
 		private List<OriginElementTree> getAll() {
 			List<OriginElementTree> children = new ArrayList<>();
 			for (Element originGroup : map.keySet()) {
@@ -144,7 +155,7 @@ public class DistanceDataTree implements Serializable {
 				return getAll();
 			return Arrays.asList(map.get(originAtomName));
 		}
-		
+
 		private List<OriginAtomNameTree> getAll() {
 			List<OriginAtomNameTree> children = new ArrayList<>();
 			for (String originGroup : map.keySet()) {
@@ -180,7 +191,7 @@ public class DistanceDataTree implements Serializable {
 				return getAll();
 			return Arrays.asList(map.get(targetGroup));
 		}
-		
+
 		private List<TargetGroupTree> getAll() {
 			List<TargetGroupTree> children = new ArrayList<>();
 			for (String originGroup : map.keySet()) {
@@ -208,7 +219,7 @@ public class DistanceDataTree implements Serializable {
 
 		public void add(Element targetElement, String targetAtomName,
 				DistanceResult dr) {
-			if (map.containsKey(targetElement)) {				
+			if (map.containsKey(targetElement)) {
 				map.get(targetElement).add(targetAtomName, dr);
 			} else {
 				map.put(targetElement,
@@ -221,7 +232,7 @@ public class DistanceDataTree implements Serializable {
 				return getAll();
 			return Arrays.asList(map.get(targetElement));
 		}
-		
+
 		private List<TargetElementTree> getAll() {
 			List<TargetElementTree> children = new ArrayList<>();
 			for (Element originGroup : map.keySet()) {
@@ -254,7 +265,7 @@ public class DistanceDataTree implements Serializable {
 				return getAll();
 			return map.get(targetAtomName);
 		}
-		
+
 		private List<DistanceResult> getAll() {
 			List<DistanceResult> children = new ArrayList<>();
 			for (String originGroup : map.keySet()) {

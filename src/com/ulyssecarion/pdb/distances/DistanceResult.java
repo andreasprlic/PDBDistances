@@ -4,6 +4,12 @@ import java.io.Serializable;
 
 import org.biojava.bio.structure.Atom;
 
+/**
+ * Reports a match between two atoms, and provides information for finding the
+ * origin and target atoms again.
+ * 
+ * @author Ulysse Carion
+ */
 public class DistanceResult implements Serializable {
 	private static final long serialVersionUID = 6520222050181037241L;
 	private String pdbID;
@@ -40,7 +46,7 @@ public class DistanceResult implements Serializable {
 	public AtomInformation getTarget() {
 		return target;
 	}
-	
+
 	@Override
 	public String toString() {
 		return origin + " -> " + target + " @ " + distance + "A";

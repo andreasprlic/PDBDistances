@@ -6,14 +6,36 @@ public class DistanceQuery {
 	private String originGroupName;
 	private Element originElement;
 	private String originAtomName;
-	
+
 	private String targetGroupName;
 	private Element targetElement;
 	private String targetAtomName;
-	
+
 	private double minDistance;
 	private double maxDistance;
-	
+
+	/**
+	 * Constructs a DistanceQuery with the given parameters.<br />
+	 * <b>Note: any argument that is passed as 'null' is considered a wildcard
+	 * and will match anything.</b>
+	 * 
+	 * @param originGroupName
+	 *            the group name of the origin atom
+	 * @param originElement
+	 *            the element of the origin atom
+	 * @param originAtomName
+	 *            the name of the origin atom
+	 * @param targetGroupName
+	 *            the group name of the target atom
+	 * @param targetElement
+	 *            the element of the target atom
+	 * @param targetAtomName
+	 *            the name of the target atom
+	 * @param minDistance
+	 *            the closest the two atoms can be
+	 * @param maxDistance
+	 *            the furthest the two atoms can be
+	 */
 	public DistanceQuery(String originGroupName, Element originElement,
 			String originAtomName, String targetGroupName,
 			Element targetElement, String targetAtomName, double minDistance,

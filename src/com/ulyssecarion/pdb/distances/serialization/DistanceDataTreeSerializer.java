@@ -9,6 +9,8 @@ import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.Set;
 
+import org.biojava.bio.structure.Group;
+
 import com.ulyssecarion.pdb.distances.DistanceDataTree;
 import com.ulyssecarion.pdb.distances.DistanceDataTree.OriginGroupTree;
 
@@ -19,6 +21,15 @@ public class DistanceDataTreeSerializer {
 			+ File.separator;
 	private static final String EXTENSION = ".ser";
 
+	/**
+	 * Serialize a DistanceDataTree and create a separate file for each
+	 * OriginGroupTree in that DistanceDataTree. This can be used in conjunction
+	 * with {@link #deserializeOriginGroup(String)}.
+	 * 
+	 * @param dataTree
+	 *            the DistanceDataTree to serialize.
+	 * @see #deserializeOriginGroup(String)
+	 */
 	public static void serializeByOriginGroups(DistanceDataTree dataTree) {
 		Set<String> originGroups = dataTree.getOriginGroupNames();
 
@@ -27,6 +38,18 @@ public class DistanceDataTreeSerializer {
 		}
 	}
 
+	/**
+	 * Deserializes a single OriginGroupTree. This should be called after having
+	 * generated a DistanceDataTree and having serialized that tree with
+	 * {@link #serializeByOriginGroups(DistanceDataTree)}.
+	 * 
+	 * @param originGroupName
+	 *            the name of the origin group to deserialize; this should look
+	 *            like what you might get back from {@link Group#getPDBName()},
+	 *            but trimmed (call {@link String#trim()}).
+	 * @return the OriginGroupTree found, or null if something went wrong.
+	 * @see #serializeByOriginGroups(DistanceDataTree)
+	 */
 	public static OriginGroupTree deserializeOriginGroup(String originGroupName) {
 		try {
 			ObjectInputStream in = new ObjectInputStream(new FileInputStream(
