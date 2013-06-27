@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.biojava.bio.structure.Atom;
 import org.biojava.bio.structure.Element;
@@ -63,6 +64,10 @@ public class DistanceDataTree implements Serializable {
 			children.add(map.get(originGroup));
 		}
 		return children;
+	}
+	
+	public Set<String> getOriginGroupNames() {
+		return map.keySet();
 	}
 
 	@Override
