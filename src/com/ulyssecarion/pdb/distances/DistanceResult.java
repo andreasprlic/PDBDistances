@@ -1,8 +1,11 @@
 package com.ulyssecarion.pdb.distances;
 
+import java.io.Serializable;
+
 import org.biojava.bio.structure.Atom;
 
-public class DistanceResult {
+public class DistanceResult implements Serializable {
+	private static final long serialVersionUID = 6520222050181037241L;
 	private String pdbID;
 	private double distance;
 	private AtomInformation origin;

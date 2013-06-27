@@ -1,6 +1,8 @@
 package com.ulyssecarion.pdb.distances;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,11 +18,18 @@ import org.biojava.bio.structure.Element;
 // Target Atom Name -->
 // Result
 // The only remaining variable, the origin group name, is taken care of by DistanceDataTree itself.
-public class DistanceDataTree {
+public class DistanceDataTree implements Serializable {
+	private static final long serialVersionUID = 6028342478914501676L;
 	private final Map<String, OriginGroupTree> map;
 
 	public DistanceDataTree() {
 		map = new HashMap<>();
+	}
+	
+	// TODO : join(DistanceDataTree other)
+	
+	public List<DistanceResult> search(DistanceQuery query) {
+		return DistanceDataTreeSearcher.search(this, query);
 	}
 
 	public void add(Atom origin, Atom target, DistanceResult dr) {
@@ -41,9 +50,19 @@ public class DistanceDataTree {
 					dr));
 		}
 	}
-
-	public OriginGroupTree get(String originGroup) {
-		return map.get(originGroup);
+	
+	public List<OriginGroupTree> get(String originGroup) {
+		if (originGroup == null)
+			return getAll();
+		return Arrays.asList(map.get(originGroup));
+	}
+	
+	private List<OriginGroupTree> getAll() {
+		List<OriginGroupTree> children = new ArrayList<>();
+		for (String originGroup : map.keySet()) {
+			children.add(map.get(originGroup));
+		}
+		return children;
 	}
 
 	@Override
@@ -54,7 +73,8 @@ public class DistanceDataTree {
 	// Begin internal classes:
 
 	// Elements --> OriginElementTree
-	public static class OriginGroupTree {
+	public static class OriginGroupTree implements Serializable {
+		private static final long serialVersionUID = 1923590352095758899L;
 		private final Map<Element, OriginElementTree> map;
 
 		public OriginGroupTree(Element originElement, String originAtomName,
@@ -77,13 +97,24 @@ public class DistanceDataTree {
 			}
 		}
 
-		public OriginElementTree get(Element originElement) {
-			return map.get(originElement);
+		public List<OriginElementTree> get(Element originElement) {
+			if (originElement == null)
+				return getAll();
+			return Arrays.asList(map.get(originElement));
+		}
+		
+		private List<OriginElementTree> getAll() {
+			List<OriginElementTree> children = new ArrayList<>();
+			for (Element originGroup : map.keySet()) {
+				children.add(map.get(originGroup));
+			}
+			return children;
 		}
 	}
 
 	// Atom Names --> OriginAtomNameTree
-	public static class OriginElementTree {
+	public static class OriginElementTree implements Serializable {
+		private static final long serialVersionUID = 5388345241741841348L;
 		private final Map<String, OriginAtomNameTree> map;
 
 		public OriginElementTree(String originAtomName, String targetGroup,
@@ -103,13 +134,24 @@ public class DistanceDataTree {
 			}
 		}
 
-		public OriginAtomNameTree get(String originAtomName) {
-			return map.get(originAtomName);
+		public List<OriginAtomNameTree> get(String originAtomName) {
+			if (originAtomName == null)
+				return getAll();
+			return Arrays.asList(map.get(originAtomName));
+		}
+		
+		private List<OriginAtomNameTree> getAll() {
+			List<OriginAtomNameTree> children = new ArrayList<>();
+			for (String originGroup : map.keySet()) {
+				children.add(map.get(originGroup));
+			}
+			return children;
 		}
 	}
 
 	// Group Names --> TargetGroupTree
-	public static class OriginAtomNameTree {
+	public static class OriginAtomNameTree implements Serializable {
+		private static final long serialVersionUID = -7548849242772077642L;
 		private final Map<String, TargetGroupTree> map;
 
 		public OriginAtomNameTree(String targetGroup, Element targetElement,
@@ -128,8 +170,18 @@ public class DistanceDataTree {
 			}
 		}
 
-		public TargetGroupTree get(String targetGroup) {
-			return map.get(targetGroup);
+		public List<TargetGroupTree> get(String targetGroup) {
+			if (targetGroup == null)
+				return getAll();
+			return Arrays.asList(map.get(targetGroup));
+		}
+		
+		private List<TargetGroupTree> getAll() {
+			List<TargetGroupTree> children = new ArrayList<>();
+			for (String originGroup : map.keySet()) {
+				children.add(map.get(originGroup));
+			}
+			return children;
 		}
 
 		@Override
@@ -139,7 +191,8 @@ public class DistanceDataTree {
 	}
 
 	// Elements --> TargetElementTree
-	public static class TargetGroupTree {
+	public static class TargetGroupTree implements Serializable {
+		private static final long serialVersionUID = 6475448405310353036L;
 		private final Map<Element, TargetElementTree> map;
 
 		public TargetGroupTree(Element targetElement, String targetAtomName,
@@ -158,13 +211,24 @@ public class DistanceDataTree {
 			}
 		}
 
-		public TargetElementTree get(Element targetElement) {
-			return map.get(targetElement);
+		public List<TargetElementTree> get(Element targetElement) {
+			if (targetElement == null)
+				return getAll();
+			return Arrays.asList(map.get(targetElement));
+		}
+		
+		private List<TargetElementTree> getAll() {
+			List<TargetElementTree> children = new ArrayList<>();
+			for (Element originGroup : map.keySet()) {
+				children.add(map.get(originGroup));
+			}
+			return children;
 		}
 	}
 
 	// Atom Names --> DistanceResult
-	public static class TargetElementTree {
+	public static class TargetElementTree implements Serializable {
+		private static final long serialVersionUID = 2380451003692094447L;
 		private final Map<String, List<DistanceResult>> map;
 
 		public TargetElementTree(String targetAtomName, DistanceResult dr) {
@@ -181,7 +245,17 @@ public class DistanceDataTree {
 		}
 
 		public List<DistanceResult> get(String targetAtomName) {
+			if (targetAtomName == null)
+				return getAll();
 			return map.get(targetAtomName);
+		}
+		
+		private List<DistanceResult> getAll() {
+			List<DistanceResult> children = new ArrayList<>();
+			for (String originGroup : map.keySet()) {
+				children.addAll(map.get(originGroup));
+			}
+			return children;
 		}
 	}
 }

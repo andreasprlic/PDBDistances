@@ -1,9 +1,12 @@
 package com.ulyssecarion.pdb.distances;
 
+import java.io.Serializable;
+
 import org.biojava.bio.structure.Atom;
 import org.biojava.bio.structure.ResidueNumber;
 
-public class AtomInformation {
+public class AtomInformation implements Serializable {
+	private static final long serialVersionUID = -8124843543713094007L;
 	private String chainID;
 	private String groupName;
 	private ResidueNumber residueNumber;
@@ -40,6 +43,6 @@ public class AtomInformation {
 	
 	@Override
 	public String toString() {
-		return groupName + " Chain: " + chainID + ", Res: " + residueNumber + ", Atom No: " + serialNumber;
+		return groupName + " Chain: " + chainID + " Res: " + residueNumber + " Atom No: " + serialNumber;
 	}
 }
