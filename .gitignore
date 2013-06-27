@@ -13,3 +13,6 @@
 
 # Keep .gitignore #
 !.gitignore
+
+# Program-generated files #
+serialized_ddtrees
