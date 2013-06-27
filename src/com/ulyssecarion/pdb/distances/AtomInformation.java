@@ -21,8 +21,9 @@ public class AtomInformation implements Serializable {
 	}
 
 	public AtomInformation(Atom a) {
-		this(a.getGroup().getChainId(), a.getGroup().getPDBName(), a.getGroup()
-				.getResidueNumber(), a.getPDBserial());
+		this(a.getGroup().getChainId().trim(),
+				a.getGroup().getPDBName().trim(), a.getGroup()
+						.getResidueNumber(), a.getPDBserial());
 	}
 
 	public String getChainID() {
@@ -40,9 +41,10 @@ public class AtomInformation implements Serializable {
 	public int getSerialNumber() {
 		return serialNumber;
 	}
-	
+
 	@Override
 	public String toString() {
-		return groupName + " Chain: " + chainID + " Res: " + residueNumber + " Atom No: " + serialNumber;
+		return groupName + " Chain: " + chainID + " Res: " + residueNumber
+				+ " Atom No: " + serialNumber;
 	}
 }

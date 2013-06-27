@@ -33,9 +33,9 @@ public class DistanceDataTree implements Serializable {
 	}
 
 	public void add(Atom origin, Atom target, DistanceResult dr) {
-		add(origin.getGroup().getPDBName(), origin.getElement(),
-				origin.getName(), target.getGroup().getPDBName(),
-				target.getElement(), target.getName(), dr);
+		add(origin.getGroup().getPDBName().trim(), origin.getElement(),
+				origin.getName().trim(), target.getGroup().getPDBName().trim(),
+				target.getElement(), target.getName().trim(), dr);
 	}
 
 	public void add(String originGroup, Element originElement,
