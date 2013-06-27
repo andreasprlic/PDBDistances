@@ -17,3 +17,6 @@
 # Program-generated files #
 serialized_ddtrees
 serialized_groups
+
+# Text files #
+*.txt
