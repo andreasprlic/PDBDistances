@@ -10,7 +10,7 @@ import com.ulyssecarion.pdb.distances.serialization.DistanceDataTreeSerializer;
 
 public class DistanceDataTreeBuilderDriver {
 	private static final int SAVE_EVERY = 1000;
-	private static final int START_AT = 14000;
+	private static final int START_AT = 26000;
 
 	/**
 	 * Builds a DistanceDataTree for every 1000 PDB IDs in the database. They

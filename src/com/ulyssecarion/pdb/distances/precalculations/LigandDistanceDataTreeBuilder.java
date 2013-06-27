@@ -64,7 +64,7 @@ public class LigandDistanceDataTreeBuilder {
 			structure = StructureIO.getBiologicalAssembly(pdbID, bioAssemblyId);
 		} catch (IOException | StructureException e) {
 			e.printStackTrace();
-			throw new RuntimeException();
+			return;
 		}
 
 		List<Atom> atoms = getAtoms(structure);
