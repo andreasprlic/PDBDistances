@@ -7,7 +7,6 @@ import java.util.List;
 import org.biojava.bio.structure.Atom;
 import org.biojava.bio.structure.Calc;
 import org.biojava.bio.structure.Chain;
-import org.biojava.bio.structure.Element;
 import org.biojava.bio.structure.Group;
 import org.biojava.bio.structure.Structure;
 import org.biojava.bio.structure.StructureException;
@@ -42,26 +41,17 @@ public class LigandDistanceDataTreeBuilder {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(buildTreeFor("101D").get(" MG").get(Element.Mg)
-				.get("MG").get(" DG").get(Element.O).get("O6"));
+		
 	}
-
-	public static DistanceDataTree buildTreeFor(String pdbID) {
-		
 	
+	public static void buildTreeFor(DistanceDataTree dataTree, String pdbID) {
 		StructureIO.setAtomCache(cache);
-
-		
-		//ChemCompGroupFactory.setChemCompProvider(new AllChemCompProvider());
-		
-		DistanceDataTree distanceDataTree = new DistanceDataTree();
 
 		int bioAssemblyCount = StructureIO.getNrBiologicalAssemblies(pdbID);
 		int bioAssemblyId = bioAssemblyCount > 0 ? 1 : 0;
 
 		Structure structure = null;
 		try {
-			
 			structure = StructureIO.getBiologicalAssembly(pdbID, bioAssemblyId);
 		} catch (IOException | StructureException e) {
 			e.printStackTrace();
@@ -82,7 +72,7 @@ public class LigandDistanceDataTreeBuilder {
 								&& distance < MAX_DISTANCE) {
 							DistanceResult dr = new DistanceResult(pdbID,
 									distance, a, b);
-							distanceDataTree.add(a, b, dr);
+							dataTree.add(a, b, dr);
 						}
 					}
 				}
@@ -90,8 +80,6 @@ public class LigandDistanceDataTreeBuilder {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		return distanceDataTree;
 	}
 
 	private static List<Atom> getAtoms(Structure s) {
