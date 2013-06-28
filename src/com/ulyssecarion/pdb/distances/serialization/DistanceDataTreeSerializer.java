@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -18,6 +19,8 @@ public class DistanceDataTreeSerializer {
 	private static final String DDT_OUTPUT_FILE = "serialized_ddtrees"
 			+ File.separator;
 	private static final String ORIGIN_GROUP_OUTPUT_FILE = "serialized_groups"
+			+ File.separator;
+	private static final String DDT_GROUP_OUTPUT_FILE = "serialized_trees_by_groups"
 			+ File.separator;
 	private static final String EXTENSION = ".ser";
 
@@ -34,6 +37,7 @@ public class DistanceDataTreeSerializer {
 		Set<String> originGroups = dataTree.getOriginGroupNames();
 
 		for (String originGroup : originGroups) {
+			System.out.println("Serializing group: " + originGroup);
 			serialize(dataTree.get(originGroup), originGroup);
 		}
 	}
@@ -124,6 +128,51 @@ public class DistanceDataTreeSerializer {
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 			return null;
+		}
+	}
+
+	public static void main(String[] args) {
+		saveAllDataTreesByGroups();
+	}
+	
+	public static void saveAllDataTreesByGroups() {
+		File dataTreeDir = new File(DDT_OUTPUT_FILE);
+		File[] dataTrees = dataTreeDir.listFiles();
+
+		for (File f : dataTrees) {
+			String name = f.getName().substring(0, 4);
+
+			System.out.println("Working on " + name);
+			long start = System.currentTimeMillis();
+			DistanceDataTree dataTree = deserializeDataTree(name);
+			long stop = System.currentTimeMillis();
+			System.out.println("Deserialized in " + ((stop - start) / 1000.0)
+					+ " s.");
+
+			start = System.currentTimeMillis();
+			saveDataTreeGroups(dataTree, name);
+			stop = System.currentTimeMillis();
+			System.out.println("Saved the origin group tables in "
+					+ ((stop - start) / 1000.0) + " s.");
+		}
+	}
+
+	private static void saveDataTreeGroups(DistanceDataTree dataTree,
+			String name) {
+		String path = DDT_GROUP_OUTPUT_FILE + name + File.separator;
+		
+		(new File(path)).mkdir();
+		
+		try {
+			for (String groupName : dataTree.getOriginGroupNames()) {
+				System.out.println("\tSaving a group: " + groupName);
+				ObjectOutputStream out = new ObjectOutputStream(
+						new FileOutputStream(path + groupName));
+				out.writeObject(dataTree.get(groupName).get(0));
+				out.close();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }
