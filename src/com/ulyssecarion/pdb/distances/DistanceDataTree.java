@@ -38,8 +38,6 @@ public class DistanceDataTree implements Serializable {
 		map = new HashMap<>();
 	}
 
-	// TODO : join(DistanceDataTree other)
-
 	public List<DistanceResult> search(DistanceQuery query) {
 		return DistanceDataTreeSearcher.search(this, query);
 	}
@@ -85,6 +83,16 @@ public class DistanceDataTree implements Serializable {
 	public String toString() {
 		return map.keySet().toString();
 	}
+	
+	public void join(DistanceDataTree other) {
+		for (String originGroup : other.map.keySet()) {
+			if (map.containsKey(originGroup)) {
+				map.get(originGroup).join(other.map.get(originGroup));
+			} else {
+				map.put(originGroup, other.map.get(originGroup));
+			}
+		}
+	}
 
 	// Begin internal classes:
 
@@ -126,6 +134,16 @@ public class DistanceDataTree implements Serializable {
 			}
 			return children;
 		}
+		
+		public void join(OriginGroupTree other) {
+			for (Element originElement : other.map.keySet()) {
+				if (map.containsKey(originElement)) {
+					map.get(originElement).join(other.map.get(originElement));
+				} else {
+					map.put(originElement, other.map.get(originElement));
+				}
+			}
+		}
 	}
 
 	// Atom Names --> OriginAtomNameTree
@@ -162,6 +180,16 @@ public class DistanceDataTree implements Serializable {
 				children.add(map.get(originGroup));
 			}
 			return children;
+		}
+		
+		public void join(OriginElementTree other) {
+			for (String originAtomName : other.map.keySet()) {
+				if (map.containsKey(originAtomName)) {
+					map.get(originAtomName).join(other.map.get(originAtomName));
+				} else {
+					map.put(originAtomName, other.map.get(originAtomName));
+				}
+			}
 		}
 	}
 
@@ -200,9 +228,14 @@ public class DistanceDataTree implements Serializable {
 			return children;
 		}
 
-		@Override
-		public String toString() {
-			return map.keySet().toString();
+		public void join(OriginAtomNameTree other) {
+			for (String targetGroup : other.map.keySet()) {
+				if (map.containsKey(targetGroup)) {
+					map.get(targetGroup).join(other.map.get(targetGroup));
+				} else {
+					map.put(targetGroup, other.map.get(targetGroup));
+				}
+			}
 		}
 	}
 
@@ -240,6 +273,16 @@ public class DistanceDataTree implements Serializable {
 			}
 			return children;
 		}
+		
+		public void join(TargetGroupTree other) {
+			for (Element targetElement : other.map.keySet()) {
+				if (map.containsKey(targetElement)) {
+					map.get(targetElement).join(other.map.get(targetElement));
+				} else {
+					map.put(targetElement, other.map.get(targetElement));
+				}
+			}
+		}
 	}
 
 	// Atom Names --> DistanceResult
@@ -272,6 +315,16 @@ public class DistanceDataTree implements Serializable {
 				children.addAll(map.get(originGroup));
 			}
 			return children;
+		}
+		
+		public void join(TargetElementTree other) {
+			for (String targetAtomName : other.map.keySet()) {
+				if (map.containsKey(targetAtomName)) {
+					map.get(targetAtomName).addAll(other.map.get(targetAtomName));
+				} else {
+					map.put(targetAtomName, other.map.get(targetAtomName));
+				}
+			}
 		}
 	}
 }
