@@ -16,7 +16,6 @@ import org.biojava3.structure.StructureIO;
 
 import com.ulyssecarion.pdb.distances.DistanceDataTree;
 import com.ulyssecarion.pdb.distances.DistanceResult;
-import com.ulyssecarion.pdb.distances.serialization.DistanceDataTreeSerializer;
 
 /**
  * Creates a data tree for a single PDB entry, but limiting origin groups to

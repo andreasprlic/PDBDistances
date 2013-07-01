@@ -3,10 +3,10 @@ package com.ulyssecarion.pdb.distances;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.biojava.bio.structure.Atom;
 import org.biojava.bio.structure.Element;
@@ -35,7 +35,7 @@ public class DistanceDataTree implements Serializable {
 	private final Map<String, OriginGroupTree> map;
 
 	public DistanceDataTree() {
-		map = new HashMap<>();
+		map = new ConcurrentHashMap<>();
 	}
 
 	public List<DistanceResult> search(DistanceQuery query) {
@@ -83,7 +83,7 @@ public class DistanceDataTree implements Serializable {
 	public String toString() {
 		return map.keySet().toString();
 	}
-	
+
 	public void join(DistanceDataTree other) {
 		for (String originGroup : other.map.keySet()) {
 			if (map.containsKey(originGroup)) {
@@ -104,7 +104,7 @@ public class DistanceDataTree implements Serializable {
 		public OriginGroupTree(Element originElement, String originAtomName,
 				String targetGroup, Element targetElement,
 				String targetAtomName, DistanceResult dr) {
-			map = new HashMap<>();
+			map = new ConcurrentHashMap<>();
 			add(originElement, originAtomName, targetGroup, targetElement,
 					targetAtomName, dr);
 		}
@@ -134,7 +134,11 @@ public class DistanceDataTree implements Serializable {
 			}
 			return children;
 		}
-		
+
+		public Set<Element> getKeys() {
+			return map.keySet();
+		}
+
 		public void join(OriginGroupTree other) {
 			for (Element originElement : other.map.keySet()) {
 				if (map.containsKey(originElement)) {
@@ -153,7 +157,7 @@ public class DistanceDataTree implements Serializable {
 
 		public OriginElementTree(String originAtomName, String targetGroup,
 				Element targetElement, String targetAtomName, DistanceResult dr) {
-			map = new HashMap<>();
+			map = new ConcurrentHashMap<>();
 			add(originAtomName, targetGroup, targetElement, targetAtomName, dr);
 		}
 
@@ -181,7 +185,11 @@ public class DistanceDataTree implements Serializable {
 			}
 			return children;
 		}
-		
+
+		public Set<String> getKeys() {
+			return map.keySet();
+		}
+
 		public void join(OriginElementTree other) {
 			for (String originAtomName : other.map.keySet()) {
 				if (map.containsKey(originAtomName)) {
@@ -200,7 +208,7 @@ public class DistanceDataTree implements Serializable {
 
 		public OriginAtomNameTree(String targetGroup, Element targetElement,
 				String targetAtomName, DistanceResult dr) {
-			map = new HashMap<>();
+			map = new ConcurrentHashMap<>();
 			add(targetGroup, targetElement, targetAtomName, dr);
 		}
 
@@ -228,6 +236,10 @@ public class DistanceDataTree implements Serializable {
 			return children;
 		}
 
+		public Set<String> getKeys() {
+			return map.keySet();
+		}
+
 		public void join(OriginAtomNameTree other) {
 			for (String targetGroup : other.map.keySet()) {
 				if (map.containsKey(targetGroup)) {
@@ -246,7 +258,7 @@ public class DistanceDataTree implements Serializable {
 
 		public TargetGroupTree(Element targetElement, String targetAtomName,
 				DistanceResult dr) {
-			map = new HashMap<>();
+			map = new ConcurrentHashMap<>();
 			add(targetElement, targetAtomName, dr);
 		}
 
@@ -273,7 +285,11 @@ public class DistanceDataTree implements Serializable {
 			}
 			return children;
 		}
-		
+
+		public Set<Element> getKeys() {
+			return map.keySet();
+		}
+
 		public void join(TargetGroupTree other) {
 			for (Element targetElement : other.map.keySet()) {
 				if (map.containsKey(targetElement)) {
@@ -291,7 +307,7 @@ public class DistanceDataTree implements Serializable {
 		private final Map<String, List<DistanceResult>> map;
 
 		public TargetElementTree(String targetAtomName, DistanceResult dr) {
-			map = new HashMap<>();
+			map = new ConcurrentHashMap<>();
 			add(targetAtomName, dr);
 		}
 
@@ -316,11 +332,16 @@ public class DistanceDataTree implements Serializable {
 			}
 			return children;
 		}
-		
+
+		public Set<String> getKeys() {
+			return map.keySet();
+		}
+
 		public void join(TargetElementTree other) {
 			for (String targetAtomName : other.map.keySet()) {
 				if (map.containsKey(targetAtomName)) {
-					map.get(targetAtomName).addAll(other.map.get(targetAtomName));
+					map.get(targetAtomName).addAll(
+							other.map.get(targetAtomName));
 				} else {
 					map.put(targetAtomName, other.map.get(targetAtomName));
 				}

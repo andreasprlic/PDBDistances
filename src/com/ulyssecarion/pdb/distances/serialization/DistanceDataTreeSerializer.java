@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -14,15 +13,19 @@ import org.biojava.bio.structure.Group;
 
 import com.ulyssecarion.pdb.distances.DistanceDataTree;
 import com.ulyssecarion.pdb.distances.DistanceDataTree.OriginGroupTree;
+import com.ulyssecarion.pdb.distances.DistanceResult;
+import com.ulyssecarion.pdb.distances.precalculations.LigandDistanceDataTreeBuilder;
 
 public class DistanceDataTreeSerializer {
-	private static final String DDT_OUTPUT_FILE = "serialized_ddtrees"
+	public static final String DDT_OUTPUT_FILE = "serialized_ddtrees"
 			+ File.separator;
-	private static final String ORIGIN_GROUP_OUTPUT_FILE = "serialized_groups"
+	public static final String ORIGIN_GROUP_OUTPUT_FILE = "serialized_groups"
 			+ File.separator;
-	private static final String DDT_GROUP_OUTPUT_FILE = "serialized_trees_by_groups"
+	public static final String DDT_GROUP_OUTPUT_FILE = "serialized_trees_by_groups"
 			+ File.separator;
-	private static final String EXTENSION = ".ser";
+	public static final String DIR_OUTPUT_FOLDER = "data_dir" + File.separator;
+
+	public static final String EXTENSION = ".ser";
 
 	/**
 	 * Serialize a DistanceDataTree and create a separate file for each
@@ -106,6 +109,34 @@ public class DistanceDataTreeSerializer {
 		}
 	}
 
+	public static void serializeResult(List<DistanceResult> result, String path) {
+		try {
+			ObjectOutputStream out = new ObjectOutputStream(
+					new FileOutputStream(path));
+			out.writeObject(result);
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static List<DistanceResult> deserializeResults(String path) {
+		try {
+			ObjectInputStream in = new ObjectInputStream(new FileInputStream(
+					path));
+
+			@SuppressWarnings("unchecked")
+			List<DistanceResult> result = (List<DistanceResult>) in
+					.readObject();
+
+			in.close();
+			return result;
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 	/**
 	 * Deserializes a DistanceDataTree saved at the file whose name is specified
 	 * 
@@ -118,6 +149,9 @@ public class DistanceDataTreeSerializer {
 	 */
 	public static DistanceDataTree deserializeDataTree(String name) {
 		try {
+			if (name.endsWith(EXTENSION))
+				name = name.substring(0, 4);
+
 			ObjectInputStream in = new ObjectInputStream(new FileInputStream(
 					DDT_OUTPUT_FILE + name + EXTENSION));
 
@@ -131,10 +165,6 @@ public class DistanceDataTreeSerializer {
 		}
 	}
 
-	public static void main(String[] args) {
-		saveAllDataTreesByGroups();
-	}
-	
 	public static void saveAllDataTreesByGroups() {
 		File dataTreeDir = new File(DDT_OUTPUT_FILE);
 		File[] dataTrees = dataTreeDir.listFiles();
@@ -160,9 +190,9 @@ public class DistanceDataTreeSerializer {
 	private static void saveDataTreeGroups(DistanceDataTree dataTree,
 			String name) {
 		String path = DDT_GROUP_OUTPUT_FILE + name + File.separator;
-		
+
 		(new File(path)).mkdir();
-		
+
 		try {
 			for (String groupName : dataTree.getOriginGroupNames()) {
 				System.out.println("\tSaving a group: " + groupName);
@@ -174,5 +204,13 @@ public class DistanceDataTreeSerializer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static void main(String[] args) {
+		DistanceDataTree d = new DistanceDataTree();
+		LigandDistanceDataTreeBuilder.buildTreeFor(d, "100D");
+		serializeDataTree(d, "1000");
+
+		// buildDirectoryStructureFromSerializedDataTrees();
 	}
 }

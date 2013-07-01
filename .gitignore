@@ -18,6 +18,8 @@
 serialized_ddtrees
 serialized_groups
 serialized_trees_by_groups
+data_dir
+serialized_origin_groups
 
 # Text files #
 *.txt
