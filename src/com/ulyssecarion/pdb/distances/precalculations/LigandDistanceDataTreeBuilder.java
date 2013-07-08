@@ -28,7 +28,7 @@ public class LigandDistanceDataTreeBuilder {
 	 * If a ligand atom is any further from a potential target atom, it is not
 	 * recorded.
 	 */
-	private static final double MAX_DISTANCE = 8.0;
+	private static final double MAX_DISTANCE = 5.0;
 
 	private static AtomCache cache;
 
@@ -69,7 +69,7 @@ public class LigandDistanceDataTreeBuilder {
 
 		List<Atom> atoms = getAtoms(structure);
 		List<Group> ligands = getLigands(structure);
-
+		
 		try {
 			for (Atom a : atoms) {
 				if (ligands.contains(a.getGroup())) {

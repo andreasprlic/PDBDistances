@@ -19,10 +19,11 @@ import com.ulyssecarion.pdb.distances.serialization.DistanceDataTreeSerializer;
 
 public class DistanceDataTreeBuilderDriver {
 	private static final int SAVE_EVERY = 1000;
-	private static final int START_AT = 26000;
+	private static final int START_AT = 0;
+	private static final int STOP_AT = 1_000_000_000;
 
 	public static void main(String[] args) throws Exception {
-		buildDirectoryFromSavedDataTrees();
+		buildAndSaveDataTrees();
 	}
 
 	/**
@@ -31,7 +32,6 @@ public class DistanceDataTreeBuilderDriver {
 	 * 
 	 * @throws Exception
 	 */
-	@SuppressWarnings("unused")
 	private static void buildAndSaveDataTrees() throws Exception {
 		BufferedReader br = new BufferedReader(new FileReader("pdbids.txt"));
 
@@ -40,8 +40,10 @@ public class DistanceDataTreeBuilderDriver {
 		while ((line = br.readLine()) != null) {
 			pdbIDs.add(line);
 		}
+		
+		System.out.println("There are " + pdbIDs.size() + " PDB IDs to work on.");
 
-		for (int i = START_AT; i < pdbIDs.size(); i += SAVE_EVERY) {
+		for (int i = START_AT; i < pdbIDs.size() && i < STOP_AT; i += SAVE_EVERY) {
 			DistanceDataTree dataTree = new DistanceDataTree();
 
 			System.out.println("Working on block starting with: "
@@ -65,7 +67,7 @@ public class DistanceDataTreeBuilderDriver {
 	}
 
 	private static void buildDirectoryFromSavedDataTrees() {
-		final String path = "/Users/ulysse/gen_data/serialized_ddtrees/";
+		final String path = DistanceDataTreeSerializer.DDT_OUTPUT_FILE;
 		File savedDataTrees = new File(path);
 
 		System.out.println("Reading from " + path);
@@ -142,7 +144,7 @@ public class DistanceDataTreeBuilderDriver {
 	}
 
 	private static void buildDirFor(TargetElementTree targetElem, String path) {
-		//new File(path).mkdir()();
+		new File(path).mkdirs();
 
 		for (String targetAtom : targetElem.getKeys()) {
 			buildDirFor(targetElem.get(targetAtom), path + targetAtom
@@ -173,8 +175,6 @@ public class DistanceDataTreeBuilderDriver {
 	 * to worry about collisions since GUIDs are, well, globally unique.
 	 */
 	private static void buildDirFor(List<DistanceResult> results, String path) {
-		new File(path).mkdirs();
-		
 		// if (new File(path).exists()) {
 		// List<DistanceResult> prev = DistanceDataTreeSerializer
 		// .deserializeResults(path);

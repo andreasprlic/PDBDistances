@@ -28,7 +28,7 @@ public class DistanceResult implements Serializable {
 			Atom target) {
 		this(pdbID, distance, origin.getPDBserial(), target.getPDBserial());
 	}
-
+	
 	public String getPdbID() {
 		return pdbID;
 	}
