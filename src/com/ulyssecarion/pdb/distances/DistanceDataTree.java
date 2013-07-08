@@ -3,6 +3,7 @@ package com.ulyssecarion.pdb.distances;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -313,7 +314,7 @@ public class DistanceDataTree implements Serializable {
 
 		public void add(String targetAtomName, DistanceResult dr) {
 			if (!map.containsKey(targetAtomName)) {
-				map.put(targetAtomName, new ArrayList<DistanceResult>());
+				map.put(targetAtomName, Collections.synchronizedList(new ArrayList<DistanceResult>()));
 			}
 
 			map.get(targetAtomName).add(dr);

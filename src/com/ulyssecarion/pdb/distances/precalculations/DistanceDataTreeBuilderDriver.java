@@ -31,6 +31,7 @@ public class DistanceDataTreeBuilderDriver {
 	 * 
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unused")
 	private static void buildAndSaveDataTrees() throws Exception {
 		BufferedReader br = new BufferedReader(new FileReader("pdbids.txt"));
 
@@ -64,31 +65,37 @@ public class DistanceDataTreeBuilderDriver {
 	}
 
 	private static void buildDirectoryFromSavedDataTrees() {
-		File savedDataTrees = new File(
-				DistanceDataTreeSerializer.DDT_OUTPUT_FILE);
+		final String path = "/Users/ulysse/gen_data/serialized_ddtrees/";
+		File savedDataTrees = new File(path);
 
-		long start = System.currentTimeMillis();
-		for (String dataTreeName : savedDataTrees.list()) {
+		System.out.println("Reading from " + path);
+		System.out.println("Outputting to: " + DistanceDataTreeSerializer.DIR_OUTPUT_FOLDER);
+		
+		for (final String dataTreeName : savedDataTrees.list()) {
 			System.out.println(dataTreeName);
 
-			long startSer = System.currentTimeMillis();
-			DistanceDataTree dataTree = DistanceDataTreeSerializer
-					.deserializeDataTree(dataTreeName);
-			long stopSer = System.currentTimeMillis();
-			System.out.println("SER took " + ((stopSer - startSer) / 1000.0));
-
-			buildDirFor(dataTree);
+//			new Thread(new Runnable() {
+//				@Override
+//				public void run() {
+//					System.err.println("New thread for " + dataTreeName);
+					long startSer = System.currentTimeMillis();
+					DistanceDataTree dataTree = DistanceDataTreeSerializer
+							.deserializeDataTree(dataTreeName);
+					long stopSer = System.currentTimeMillis();
+					System.out.println("SER took "
+							+ ((stopSer - startSer) / 1000.0));
+					buildDirFor(dataTree, path, dataTreeName);
+//				}
+//			}).start();
 		}
-		long stop = System.currentTimeMillis();
-		
-		System.out.println("Total job took " + ((stop - start) / 1000.0));
 	}
 
-	private static void buildDirFor(DistanceDataTree dataTree) {
+	private static void buildDirFor(DistanceDataTree dataTree, String path,
+			String dataTreeName) {
 		long start = System.currentTimeMillis();
 
 		for (String originGroup : dataTree.getOriginGroupNames()) {
-			System.out.println("\t" + originGroup);
+			System.out.println("\t" + originGroup + " (" + dataTreeName + ")");
 			buildDirFor(dataTree.get(originGroup).get(0),
 					DistanceDataTreeSerializer.DIR_OUTPUT_FOLDER + originGroup
 							+ File.separator);
@@ -99,7 +106,7 @@ public class DistanceDataTreeBuilderDriver {
 	}
 
 	private static void buildDirFor(OriginGroupTree originGroup, String path) {
-		new File(path).mkdir();
+		//new File(path).mkdir()();
 
 		for (Element originElem : originGroup.getKeys()) {
 			buildDirFor(originGroup.get(originElem).get(0), path + originElem
@@ -108,7 +115,7 @@ public class DistanceDataTreeBuilderDriver {
 	}
 
 	private static void buildDirFor(OriginElementTree originElem, String path) {
-		new File(path).mkdir();
+		//new File(path).mkdir()();
 
 		for (String originAtomName : originElem.getKeys()) {
 			buildDirFor(originElem.get(originAtomName).get(0), path
@@ -117,7 +124,7 @@ public class DistanceDataTreeBuilderDriver {
 	}
 
 	private static void buildDirFor(OriginAtomNameTree originAtom, String path) {
-		new File(path).mkdir();
+		//new File(path).mkdir()();
 
 		for (String targetGroup : originAtom.getKeys()) {
 			buildDirFor(originAtom.get(targetGroup).get(0), path + targetGroup
@@ -126,7 +133,7 @@ public class DistanceDataTreeBuilderDriver {
 	}
 
 	private static void buildDirFor(TargetGroupTree targetGroup, String path) {
-		new File(path).mkdir();
+		//new File(path).mkdir()();
 
 		for (Element targetElem : targetGroup.getKeys()) {
 			buildDirFor(targetGroup.get(targetElem).get(0), path + targetElem
@@ -135,7 +142,7 @@ public class DistanceDataTreeBuilderDriver {
 	}
 
 	private static void buildDirFor(TargetElementTree targetElem, String path) {
-		new File(path).mkdir();
+		//new File(path).mkdir()();
 
 		for (String targetAtom : targetElem.getKeys()) {
 			buildDirFor(targetElem.get(targetAtom), path + targetAtom
@@ -143,14 +150,43 @@ public class DistanceDataTreeBuilderDriver {
 		}
 	}
 
+	/**
+	 * Why not have a supplementary level of heirarchy with a bunch of extra
+	 * files, each named with GUIDs? So the dir structure would look like:
+	 * 
+	 * <pre>
+	 * 	LigandGroup /
+	 * 		LigandElement /
+	 * 			LigandAtomName /
+	 * 				TargetGroup / 
+	 * 					TargetElement /
+	 * 						TargetAtomName /
+	 * 							GUID1.ser
+	 * 							GUID2.ser
+	 * 							GUID3.ser
+	 * 							[...]
+	 * </pre>
+	 * 
+	 * Because I am append-only, this would allow for a multithreaded
+	 * implementation that doesn't care about whether or not something is being
+	 * written to or not, since I never have to read any files and I never have
+	 * to worry about collisions since GUIDs are, well, globally unique.
+	 */
 	private static void buildDirFor(List<DistanceResult> results, String path) {
-		if (new File(path).exists()) {
-			List<DistanceResult> prev = DistanceDataTreeSerializer
-					.deserializeResults(path);
-			prev.addAll(results);
-			DistanceDataTreeSerializer.serializeResult(prev, path);
-		} else {
-			DistanceDataTreeSerializer.serializeResult(results, path);
+		new File(path).mkdirs();
+		
+		// if (new File(path).exists()) {
+		// List<DistanceResult> prev = DistanceDataTreeSerializer
+		// .deserializeResults(path);
+		// prev.addAll(results);
+		// DistanceDataTreeSerializer.serializeResult(prev, path);
+		// } else {
+		// DistanceDataTreeSerializer.serializeResult(results, path);
+		// }
+
+		for (DistanceResult dr : results) {
+//			System.out.println(path + rand);
+			DistanceDataTreeSerializer.serializeOneResult(dr, path);
 		}
 	}
 }

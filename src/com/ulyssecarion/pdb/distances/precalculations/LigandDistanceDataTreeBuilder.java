@@ -41,7 +41,8 @@ public class LigandDistanceDataTreeBuilder {
 	}
 
 	public static void main(String[] args) {
-		
+		DistanceDataTree d = new DistanceDataTree();
+		buildTreeFor(d, "101D");
 	}
 
 	/**
