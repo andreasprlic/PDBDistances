@@ -23,7 +23,7 @@ public class DistanceDataTreeBuilderDriver {
 	private static final int STOP_AT = 1_000_000_000;
 
 	public static void main(String[] args) throws Exception {
-		buildAndSaveDataTrees();
+		buildDirectoryFromSavedDataTrees();
 	}
 
 	/**
@@ -40,8 +40,9 @@ public class DistanceDataTreeBuilderDriver {
 		while ((line = br.readLine()) != null) {
 			pdbIDs.add(line);
 		}
-		
-		System.out.println("There are " + pdbIDs.size() + " PDB IDs to work on.");
+
+		System.out.println("There are " + pdbIDs.size()
+				+ " PDB IDs to work on.");
 
 		for (int i = START_AT; i < pdbIDs.size() && i < STOP_AT; i += SAVE_EVERY) {
 			DistanceDataTree dataTree = new DistanceDataTree();
@@ -71,44 +72,42 @@ public class DistanceDataTreeBuilderDriver {
 		File savedDataTrees = new File(path);
 
 		System.out.println("Reading from " + path);
-		System.out.println("Outputting to: " + DistanceDataTreeSerializer.DIR_OUTPUT_FOLDER);
-		
+		System.out.println("Outputting to: "
+				+ DistanceDataTreeSerializer.DIR_OUTPUT_FOLDER);
+
 		for (final String dataTreeName : savedDataTrees.list()) {
 			System.out.println(dataTreeName);
 
-//			new Thread(new Runnable() {
-//				@Override
-//				public void run() {
-//					System.err.println("New thread for " + dataTreeName);
-					long startSer = System.currentTimeMillis();
-					DistanceDataTree dataTree = DistanceDataTreeSerializer
-							.deserializeDataTree(dataTreeName);
-					long stopSer = System.currentTimeMillis();
-					System.out.println("SER took "
-							+ ((stopSer - startSer) / 1000.0));
-					buildDirFor(dataTree, path, dataTreeName);
-//				}
-//			}).start();
+			// new Thread(new Runnable() {
+			// @Override
+			// public void run() {
+			// System.err.println("New thread for " + dataTreeName);
+			long startSer = System.currentTimeMillis();
+			DistanceDataTree dataTree = DistanceDataTreeSerializer
+					.deserializeDataTree(dataTreeName);
+			long stopSer = System.currentTimeMillis();
+			System.out.println("SER took " + ((stopSer - startSer) / 1000.0));
+			buildDirFor(dataTree, path, dataTreeName);
+			// }
+			// }).start();
 		}
 	}
 
 	private static void buildDirFor(DistanceDataTree dataTree, String path,
 			String dataTreeName) {
-		long start = System.currentTimeMillis();
-
 		for (String originGroup : dataTree.getOriginGroupNames()) {
-			System.out.println("\t" + originGroup + " (" + dataTreeName + ")");
+			long start = System.currentTimeMillis();
+			System.out.print("\t" + originGroup + " (" + dataTreeName + ") ");
 			buildDirFor(dataTree.get(originGroup).get(0),
 					DistanceDataTreeSerializer.DIR_OUTPUT_FOLDER + originGroup
 							+ File.separator);
+			long stop = System.currentTimeMillis();
+			System.out.println("(took " + ((stop - start) / 1000.0) + ")");
 		}
-
-		long stop = System.currentTimeMillis();
-		System.out.println("DDT took " + ((stop - start) / 1000.0));
 	}
 
 	private static void buildDirFor(OriginGroupTree originGroup, String path) {
-		//new File(path).mkdir()();
+		// new File(path).mkdir()();
 
 		for (Element originElem : originGroup.getKeys()) {
 			buildDirFor(originGroup.get(originElem).get(0), path + originElem
@@ -117,7 +116,7 @@ public class DistanceDataTreeBuilderDriver {
 	}
 
 	private static void buildDirFor(OriginElementTree originElem, String path) {
-		//new File(path).mkdir()();
+		// new File(path).mkdir()();
 
 		for (String originAtomName : originElem.getKeys()) {
 			buildDirFor(originElem.get(originAtomName).get(0), path
@@ -126,7 +125,7 @@ public class DistanceDataTreeBuilderDriver {
 	}
 
 	private static void buildDirFor(OriginAtomNameTree originAtom, String path) {
-		//new File(path).mkdir()();
+		// new File(path).mkdir()();
 
 		for (String targetGroup : originAtom.getKeys()) {
 			buildDirFor(originAtom.get(targetGroup).get(0), path + targetGroup
@@ -135,7 +134,7 @@ public class DistanceDataTreeBuilderDriver {
 	}
 
 	private static void buildDirFor(TargetGroupTree targetGroup, String path) {
-		//new File(path).mkdir()();
+		// new File(path).mkdir()();
 
 		for (Element targetElem : targetGroup.getKeys()) {
 			buildDirFor(targetGroup.get(targetElem).get(0), path + targetElem
@@ -185,7 +184,7 @@ public class DistanceDataTreeBuilderDriver {
 		// }
 
 		for (DistanceResult dr : results) {
-//			System.out.println(path + rand);
+			// System.out.println(path + rand);
 			DistanceDataTreeSerializer.serializeOneResult(dr, path);
 		}
 	}
