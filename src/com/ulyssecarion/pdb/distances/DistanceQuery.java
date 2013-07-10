@@ -81,4 +81,70 @@ public class DistanceQuery {
 	public double getMaxDistance() {
 		return maxDistance;
 	}
+
+	public class DistanceQueryBuilder {
+		private String originGroupName;
+		private Element originElement;
+		private String originAtomName;
+
+		private String targetGroupName;
+		private Element targetElement;
+		private String targetAtomName;
+
+		private double minDistance;
+		private double maxDistance;
+
+		public DistanceQueryBuilder() {
+			originGroupName = originAtomName = targetGroupName = targetAtomName = null;
+			originElement = targetElement = null;
+			minDistance = 0;
+			maxDistance = 10;
+		}
+
+		public DistanceQueryBuilder originGroup(String originGroupName) {
+			this.originGroupName = originGroupName;
+			return this;
+		}
+
+		public DistanceQueryBuilder originElement(Element originElement) {
+			this.originElement = originElement;
+			return this;
+		}
+
+		public DistanceQueryBuilder originAtom(String originAtomName) {
+			this.originAtomName = originAtomName;
+			return this;
+		}
+
+		public DistanceQueryBuilder targetGroup(String targetGroupName) {
+			this.targetGroupName = targetGroupName;
+			return this;
+		}
+
+		public DistanceQueryBuilder targetElement(Element targetElement) {
+			this.targetElement = targetElement;
+			return this;
+		}
+
+		public DistanceQueryBuilder targetAtom(String targetAtomName) {
+			this.targetAtomName = targetAtomName;
+			return this;
+		}
+
+		public DistanceQueryBuilder minDistance(double minDistance) {
+			this.minDistance = minDistance;
+			return this;
+		}
+
+		public DistanceQueryBuilder maxDistance(double maxDistance) {
+			this.maxDistance = maxDistance;
+			return this;
+		}
+
+		public DistanceQuery build() {
+			return new DistanceQuery(originGroupName, originElement,
+					originAtomName, targetGroupName, targetElement,
+					targetAtomName, minDistance, maxDistance);
+		}
+	}
 }
