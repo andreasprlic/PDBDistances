@@ -82,7 +82,13 @@ public class DistanceQuery {
 		return maxDistance;
 	}
 
-	public class DistanceQueryBuilder {
+	public String toString() {
+		return originGroupName + " " + originElement + " " + originAtomName
+				+ " -> " + targetGroupName + " " + targetElement + " "
+				+ targetAtomName;
+	}
+
+	public static class DistanceQueryBuilder {
 		private String originGroupName;
 		private Element originElement;
 		private String originAtomName;
