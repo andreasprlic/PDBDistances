@@ -85,7 +85,7 @@ public class DistanceQuery {
 	public String toString() {
 		return originGroupName + " " + originElement + " " + originAtomName
 				+ " -> " + targetGroupName + " " + targetElement + " "
-				+ targetAtomName;
+				+ targetAtomName + " (" + minDistance + " - " + maxDistance + ")";
 	}
 
 	public static class DistanceQueryBuilder {
