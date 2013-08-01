@@ -59,8 +59,9 @@ public class DistanceDataTreeDirSearcher {
 	}
 
 	public static void main(String[] args) {
-		DistanceQuery q = new DistanceQueryBuilder().originGroup("ZN")
-				.originElement(Element.Zn).targetElement(Element.O).build();
+		DistanceQuery q = new DistanceQueryBuilder().originGroup("IOD")
+				.targetGroup("ALA").targetElement(Element.C).targetAtom("CA")
+				.build();
 		System.out.println(q);
 		long start = System.nanoTime();
 		List<DistanceResult> r = search(q);
@@ -68,13 +69,13 @@ public class DistanceDataTreeDirSearcher {
 
 		for (DistanceResult dr : r)
 			System.out.println(dr);
-		
+
 		List<String> pdbIds = new ArrayList<>();
-		
+
 		for (DistanceResult dr : r)
 			if (!pdbIds.contains(dr.getPdbID()))
 				pdbIds.add(dr.getPdbID());
-		
+
 		System.out.println("Results: " + r.size());
 		System.out.println("PDB IDs: " + pdbIds.size());
 		System.out.println("Found in: " + (stop - start) / 1_000_000_000.0);
@@ -96,6 +97,9 @@ public class DistanceDataTreeDirSearcher {
 
 	public static List<DistanceResult> getDistanceResults(File file,
 			String parameter) {
+		if (parameter != null)
+			parameter += ".ser";
+
 		List<DistanceResult> results = new ArrayList<>();
 		File[] candidateFileLocations = getCandidates(file, parameter);
 
