@@ -9,6 +9,14 @@ import org.biojava.bio.structure.Element;
 import com.ulyssecarion.pdb.distances.DistanceQuery.DistanceQueryBuilder;
 import com.ulyssecarion.pdb.distances.serialization.DistanceDataTreeSerializer;
 
+/**
+ * Use this class to search through a directory structure for getting results
+ * back for you distance query. If your passed DistanceQuery has all of its
+ * parameters specified, then this query pretty much runs instantaneously
+ * because it just has to open one file and loop through a handful of lines.
+ * 
+ * @author Ulysse Carion
+ */
 public class DistanceDataTreeDirSearcher {
 	public static List<DistanceResult> search(DistanceQuery q) {
 		List<DistanceResult> results = new ArrayList<>();
@@ -81,6 +89,22 @@ public class DistanceDataTreeDirSearcher {
 		System.out.println("Found in: " + (stop - start) / 1_000_000_000.0);
 	}
 
+	/**
+	 * Get a list of files that could be worth searching for. If the parameter
+	 * is null, then we return a list of all files because null means
+	 * 'wildcard'. If it isn't null, then we use the passed argument's toString
+	 * to find out what directory to search through next.
+	 * <p>
+	 * This method takes an Object because it needs to work for both Strings and
+	 * Elements.
+	 * 
+	 * @param file
+	 *            the current file
+	 * @param parameter
+	 *            the distance query parameter that decides where to search to
+	 *            next
+	 * @return the list of subfiles to search through next
+	 */
 	public static File[] getCandidates(File file, Object parameter) {
 		if (parameter == null) {
 			return file.listFiles();
@@ -95,16 +119,25 @@ public class DistanceDataTreeDirSearcher {
 		return new File[] {};
 	}
 
+	/**
+	 * Extracts distance results from a file.
+	 * 
+	 * @param file
+	 *            the directory containing the serialized data
+	 * @param parameter
+	 *            the name of the target atom, or null if you want to match any
+	 *            target atom name
+	 * @return a list of distance results for your query
+	 */
 	public static List<DistanceResult> getDistanceResults(File file,
 			String parameter) {
 		if (parameter != null)
-			parameter += ".ser";
+			parameter += DistanceDataTreeSerializer.EXTENSION;
 
 		List<DistanceResult> results = new ArrayList<>();
 		File[] candidateFileLocations = getCandidates(file, parameter);
 
 		for (File candidateLocation : candidateFileLocations) {
-			// System.out.println(candidateLocation);
 			results.addAll(DistanceDataTreeSerializer
 					.deserializeResults(candidateLocation));
 		}

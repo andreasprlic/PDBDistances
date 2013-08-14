@@ -13,6 +13,11 @@ public class DistanceDataTreeSearcher {
 	/**
 	 * Looks for DistanceResults relevant to a given DistanceQuery made on a
 	 * DistanceDataTree.
+	 * <p>
+	 * Do not use this method for searching. This is basically just something to
+	 * test to see if a DistanceDataTree was created correctly. Use
+	 * {@link DistanceDataTreeDirSearcher} instead; it searches through
+	 * directory-stored distance data.
 	 * 
 	 * @param dataTree
 	 *            the DistanceDataTree to search through.

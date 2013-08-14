@@ -20,6 +20,9 @@ import com.ulyssecarion.pdb.distances.DistanceResult;
 /**
  * Creates a data tree for a single PDB entry, but limiting origin groups to
  * strictly ligands.
+ * <p>
+ * If you want to create more data than just stuff about ligand-based
+ * interactions, then you should create a modified version of this class.
  * 
  * @author Ulysse Carion
  */
@@ -69,7 +72,7 @@ public class LigandDistanceDataTreeBuilder {
 
 		List<Atom> atoms = getAtoms(structure);
 		List<Group> ligands = getLigands(structure);
-		
+
 		try {
 			for (Atom a : atoms) {
 				if (ligands.contains(a.getGroup())) {
@@ -94,7 +97,7 @@ public class LigandDistanceDataTreeBuilder {
 	private static List<Atom> getAtoms(Structure s) {
 		List<Atom> atoms = new ArrayList<>();
 
-		List<Chain> model = s.getModel(0); // XXX assure this is correct
+		List<Chain> model = s.getModel(0);
 		for (Chain chain : model) {
 			for (Group group : chain.getAtomGroups()) {
 				atoms.addAll(group.getAtoms());

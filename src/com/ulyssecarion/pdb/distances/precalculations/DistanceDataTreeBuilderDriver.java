@@ -17,6 +17,32 @@ import com.ulyssecarion.pdb.distances.DistanceDataTree.TargetGroupTree;
 import com.ulyssecarion.pdb.distances.DistanceResult;
 import com.ulyssecarion.pdb.distances.serialization.DistanceDataTreeSerializer;
 
+/**
+ * This class takes care of going from a list of PDB IDs to a gigantic directory
+ * structure for the DistanceDataTreeDirSearcher to use.
+ * <p>
+ * There are two steps involved in going from PDB IDs to directories. The first
+ * step is to go from PDB IDs to DistanceDataTrees, then to go from
+ * DistanceDataTrees to directories. The reason for this separation is that the
+ * entire PDB is far too large to be stored in DistanceDataTrees in memory all
+ * at once.
+ * <p>
+ * To go from PDB IDs to serialized (using the default Java serialization API)
+ * DistanceDataTrees, use buildAndSaveDataTrees(). This method will read in PDB
+ * IDs and make DistanceDataTrees for them. Because doing them all at once would
+ * be impossible, it instead creates a DistanceDataTree for each group of 1000
+ * PDB IDs. This value of 1000 is determined by the static constant SAVE_EVERY.
+ * For testing purposes, you can use START_AT and STOP_AT to only serialize a
+ * portion of the PDB. The current values (0 and a million, respectively) have
+ * no effect on the program and if you were to run this method right now, it
+ * would serialize the whole PDB.
+ * <p>
+ * To go from serialized DistanceDataTrees to the directory structure, use the
+ * aptly-named buildDirectoryFromSavedDataTrees(), which will do just that.
+ * 
+ * 
+ * @author Ulysse Carion
+ */
 public class DistanceDataTreeBuilderDriver {
 	private static final int SAVE_EVERY = 1000;
 	private static final int START_AT = 0;
@@ -67,6 +93,11 @@ public class DistanceDataTreeBuilderDriver {
 		br.close();
 	}
 
+	/**
+	 * Reads in from {@link DistanceDataTreeSerializer.DDT_OUTPUT_FILE} and
+	 * outputs directory versions of those DistanceDataTrees at
+	 * {@link DistanceDataTreeSerializer.DIR_OUTPUT_FOLDER}.
+	 */
 	private static void buildDirectoryFromSavedDataTrees() {
 		final String path = DistanceDataTreeSerializer.DDT_OUTPUT_FILE;
 		File savedDataTrees = new File(path);

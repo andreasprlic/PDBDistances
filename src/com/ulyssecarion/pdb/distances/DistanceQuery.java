@@ -2,6 +2,14 @@ package com.ulyssecarion.pdb.distances;
 
 import org.biojava.bio.structure.Element;
 
+/**
+ * Use this class to specify what kind of distance interaction you're interested
+ * in. See
+ * {@link #DistanceQuery(String, Element, String, String, Element, String, double, double)}
+ * for more specifics on what parameters can go into a distance query.
+ * 
+ * @author Ulysse Carion
+ */
 public class DistanceQuery {
 	private String originGroupName;
 	private Element originElement;
@@ -85,9 +93,16 @@ public class DistanceQuery {
 	public String toString() {
 		return originGroupName + " " + originElement + " " + originAtomName
 				+ " -> " + targetGroupName + " " + targetElement + " "
-				+ targetAtomName + " (" + minDistance + " - " + maxDistance + ")";
+				+ targetAtomName + " (" + minDistance + " - " + maxDistance
+				+ ")";
 	}
 
+	/**
+	 * Following the builder pattern, this class is a more readable way to
+	 * create a DistanceQuery.
+	 * 
+	 * @author Ulysse Carion
+	 */
 	public static class DistanceQueryBuilder {
 		private String originGroupName;
 		private Element originElement;
