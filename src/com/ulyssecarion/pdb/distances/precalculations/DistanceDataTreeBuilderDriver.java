@@ -183,8 +183,7 @@ public class DistanceDataTreeBuilderDriver {
 	}
 
 	/**
-	 * Why not have a supplementary level of heirarchy with a bunch of extra
-	 * files, each named with GUIDs? So the dir structure would look like:
+	 * The directory structure looks like this:
 	 * 
 	 * <pre>
 	 * 	LigandGroup /
@@ -192,17 +191,9 @@ public class DistanceDataTreeBuilderDriver {
 	 * 			LigandAtomName /
 	 * 				TargetGroup / 
 	 * 					TargetElement /
-	 * 						TargetAtomName /
-	 * 							GUID1.ser
-	 * 							GUID2.ser
-	 * 							GUID3.ser
-	 * 							[...]
+	 * 						TargetAtomName.ser
 	 * </pre>
 	 * 
-	 * Because I am append-only, this would allow for a multithreaded
-	 * implementation that doesn't care about whether or not something is being
-	 * written to or not, since I never have to read any files and I never have
-	 * to worry about collisions since GUIDs are, well, globally unique.
 	 */
 	private static void buildDirFor(List<DistanceResult> results, String path) {
 		// if (new File(path).exists()) {

@@ -69,7 +69,7 @@ public class LigandDistanceDataTreeBuilder {
 			e.printStackTrace();
 			return;
 		}
-
+		
 		List<Atom> atoms = getAtoms(structure);
 		List<Group> ligands = getLigands(structure);
 

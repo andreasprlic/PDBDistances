@@ -71,6 +71,7 @@ public class DistanceDataTreeDirSearcher {
 				.targetGroup("ALA").targetElement(Element.C).targetAtom("CA")
 				.build();
 		System.out.println(q);
+		
 		long start = System.nanoTime();
 		List<DistanceResult> r = search(q);
 		long stop = System.nanoTime();
