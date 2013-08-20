@@ -7,6 +7,13 @@ import org.biojava.bio.structure.Element;
 
 import chemaxon.struc.MolAtom;
 
+/**
+ * This class takes care of implementing a basic {@link Atom} and {@link Bond}
+ * class for graphs, and provides PDB- and ChemAxon-specific versions of the
+ * {@link Atom} class (namely {@link PDBAtom} and {@link ChemAxonAtom}).
+ * 
+ * @author Ulysse Carion
+ */
 public class GraphDriver {
 	/**
 	 * An atom stores its element and the bonds its in.
@@ -21,6 +28,13 @@ public class GraphDriver {
 		private int currentConnectivity;
 		private int nextConnectivity;
 
+		/**
+		 * Builds an atom with a given {@link Element}. Note that connectivity
+		 * values are not yet initialized after calling this method; you must
+		 * call {@link #initializeConnectivity()} to do so.
+		 * 
+		 * @param element
+		 */
 		public Atom(Element element) {
 			this.element = element;
 			bonds = new ArrayList<Bond>();
@@ -28,10 +42,20 @@ public class GraphDriver {
 			nextConnectivity = -1;
 		}
 
+		/**
+		 * What Element is this atom of?
+		 * 
+		 * @return this atom's element
+		 */
 		public Element getElement() {
 			return element;
 		}
 
+		/**
+		 * What bonds is this atom in?
+		 * 
+		 * @return this atom's bond list.
+		 */
 		public List<Bond> getBonds() {
 			return bonds;
 		}
@@ -45,10 +69,19 @@ public class GraphDriver {
 			return s + "] (" + getHashValue() + ")";
 		}
 
+		/**
+		 * Initializes this atom's connectivity using the
+		 * {@link #getHashValue()} method.
+		 */
 		public void initializeConnectivity() {
 			nextConnectivity = getHashValue();
 		}
 
+		/**
+		 * Calculates the next value of connectivity for an iteration of
+		 * Morgan's algorithm. The next value is reflected in the value of
+		 * {@link #getNextConnectivity()}.
+		 */
 		public void prepareNextConnectivity() {
 			int nextVal = 0;
 
@@ -59,19 +92,44 @@ public class GraphDriver {
 			nextConnectivity = nextVal + currentConnectivity;
 		}
 
+		/**
+		 * Changes this atom's current connectivity to its future connectivity.
+		 */
 		public void useNextConnectivity() {
 			currentConnectivity = nextConnectivity;
 			nextConnectivity = -1;
 		}
 
+		/**
+		 * Gets this atom's current connectivity
+		 * 
+		 * @return this atoms's current connectivity
+		 */
 		public int getCurrentConnectivity() {
 			return currentConnectivity;
 		}
 
+		/**
+		 * Gets this atom's next connectivity
+		 * 
+		 * @return this atom's next connectivity
+		 */
 		public int getNextConnectivity() {
 			return nextConnectivity;
 		}
 
+		/**
+		 * An atom's initial (aka "hash") value is calculated as:
+		 * 
+		 * <pre>
+		 * Initial Value = Atomic Number * 10 + Pi-Centeredness
+		 * </pre>
+		 * 
+		 * This method calculates such a hash value.
+		 * 
+		 * @see #isPiCenter() for determining pi-centeredness
+		 * @return the initial value of this atom to run Morgan's algorithm with
+		 */
 		public int getHashValue() {
 			int atomicNumberScore = 10 * element.getAtomicNumber();
 			int piCenterScore = isPiCenter() ? 1 : 0;
@@ -79,10 +137,32 @@ public class GraphDriver {
 			return atomicNumberScore + piCenterScore;
 		}
 
+		/**
+		 * Determines if this atom is in a pi center. This method returns true
+		 * if:
+		 * 
+		 * <ul>
+		 * <li>It forms a bond with another atom, and that bond has an order
+		 * greater than 1, OR</li>
+		 * <li>It is electronegative (more on this later), and is single-bonded
+		 * to an atom that is in turn double-bonded to an electronegative atom.</li>
+		 * </ul>
+		 * 
+		 * We determine an atom to be electronegative if its valence electron
+		 * count is between 5 and 7, inclusive.
+		 * 
+		 * @return true if this atom is in a pi center, false otherwise
+		 */
 		public boolean isPiCenter() {
 			return hasHighOrderBond() || isInInterchangeableBond();
 		}
 
+		/**
+		 * Returns true if this atom is in a bond that has an order greater than
+		 * one.
+		 * 
+		 * @return true if this atom is in a higher-order bond, false otherwise
+		 */
 		private boolean hasHighOrderBond() {
 			for (Bond bond : bonds) {
 				if (bond.getOrder() > 1) {
@@ -129,6 +209,12 @@ public class GraphDriver {
 			return false;
 		}
 
+		/**
+		 * Returns true if this atom's element's valence electron count is
+		 * between 5 and 7, inclusive.
+		 * 
+		 * @return true if this atom is electronegative, false otherwise
+		 */
 		public boolean isElectronegative() {
 			int valence = element.getValenceElectronCount();
 
@@ -162,15 +248,20 @@ public class GraphDriver {
 			return s + "] (" + getHashValue() + ")";
 		}
 	}
-	
+
+	/**
+	 * Like a regular atom, but but it also has a {@link MolAtom} counterpart.
+	 * 
+	 * @author Ulysse Carion
+	 */
 	public static class ChemAxonAtom extends Atom {
 		private MolAtom molAtom;
-		
+
 		public ChemAxonAtom(Element element, MolAtom molAtom) {
 			super(element);
 			this.molAtom = molAtom;
 		}
-		
+
 		public MolAtom getMolAtom() {
 			return molAtom;
 		}

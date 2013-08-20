@@ -16,7 +16,27 @@ import com.ulyssecarion.pdb.morgan.graph.GraphDriver.Atom;
 import com.ulyssecarion.pdb.morgan.graph.GraphDriver.Bond;
 import com.ulyssecarion.pdb.morgan.graph.GraphDriver.ChemAxonAtom;
 
+/**
+ * Takes care of converting a ChemAxon {@link Molecule} to a graph.
+ * <p>
+ * Note that the graph produced will be made of {@link ChemAxonAtom}s, which
+ * extend {@link GraphDriver.Atom} but also keep as an instance variable their
+ * ChemAxon counterparts. So if you have a {@link MolAtom} and want to find its
+ * corresponding {@link ChemAxonAtom}, simply loop through the graph returned
+ * from {@link #getGraph(Molecule)} and test for <code>==</code> equality with
+ * {@link ChemAxonAtom#getMolAtom()}.
+ * 
+ * @author Ulysse Carion
+ */
 public class ChemAxonGraphMaker {
+	/**
+	 * Works like {@link #getGraph(String)}, but takes a molecule directly
+	 * instead of using a SMILES string.
+	 * 
+	 * @see #getGraph(String)
+	 * @param m the molecule to create a graph for
+	 * @return a graph for the passed molecule
+	 */
 	public static List<ChemAxonAtom> getGraph(Molecule m) {
 		try {
 			LicenseManager
@@ -52,7 +72,7 @@ public class ChemAxonGraphMaker {
 
 		return atoms;
 	}
-	
+
 	/**
 	 * Gets a list of atoms with bonds from an inputted smiles string using the
 	 * ChemAxon API.

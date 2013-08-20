@@ -13,6 +13,14 @@ import com.ulyssecarion.pdb.morgan.graph.GraphDriver.Atom;
 import com.ulyssecarion.pdb.morgan.graph.GraphDriver.Bond;
 import com.ulyssecarion.pdb.morgan.graph.GraphDriver.PDBAtom;
 
+/**
+ * Takes care of converting a {@link ChemComp} to a graph.
+ * <p>
+ * Note that the produced graph will be of {@link PDBAtom}s, which also keep
+ * track of their atom names as a string.
+ * 
+ * @author Ulysse Carion
+ */
 public class PDBGraphMaker {
 	/**
 	 * Gets a list of atoms that are part of a ChemComp, with bonds already

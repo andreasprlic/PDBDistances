@@ -23,11 +23,24 @@ import org.biojava.bio.structure.Element;
 /**
  * Handles the hierarchy of parameters involved in building and searching
  * through the 6 parameters involved in finding a distance-based pair.
- * 
+ * <p>
  * The six levels are each handled by DistanceDataTree or its static classes.
  * They all return other static classes of DistanceDataTree except
  * TargetAtomNameTree, which is at the bottom of the chain and simply returns
  * DistanceResults.
+ * <p>
+ * This class and most of its static classes implement the following methods:
+ * <ul>
+ * <li><code>add</code>: Adds data to this tree.</li>
+ * <li><code>get</code>: Gets data from this tree and returns a subtree.</li>
+ * <li><code>join</code>: Combines data from two trees.</li>
+ * </ul>
+ * 
+ * All three of these methods do a lot of delegating; adding to an
+ * OriginGroupTree will automatically cause the calling of OriginElementTree,
+ * OriginAtomNameTree, etc.
+ * <p>
+ * The underlying implementation of these classes uses HashMaps.
  * 
  * @author Ulysse Carion
  */
@@ -314,7 +327,8 @@ public class DistanceDataTree implements Serializable {
 
 		public void add(String targetAtomName, DistanceResult dr) {
 			if (!map.containsKey(targetAtomName)) {
-				map.put(targetAtomName, Collections.synchronizedList(new ArrayList<DistanceResult>()));
+				map.put(targetAtomName, Collections
+						.synchronizedList(new ArrayList<DistanceResult>()));
 			}
 
 			map.get(targetAtomName).add(dr);

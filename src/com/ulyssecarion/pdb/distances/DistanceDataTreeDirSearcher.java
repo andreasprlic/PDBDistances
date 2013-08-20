@@ -14,10 +14,45 @@ import com.ulyssecarion.pdb.distances.serialization.DistanceDataTreeSerializer;
  * back for you distance query. If your passed DistanceQuery has all of its
  * parameters specified, then this query pretty much runs instantaneously
  * because it just has to open one file and loop through a handful of lines.
+ * <p>
+ * What this directory searcher does is it takes in a DistanceQuery and looks
+ * through the directory structure for folders and files that match the
+ * parameters in the distance query. For instance, if you specify that the
+ * interaction you want takes place with a ligand called "XYZ", then we will
+ * search through the "XYZ/" directory. If you also specify the element of your
+ * ligand is Nitrogen, then we'll search through "XYZ/N/". If you don't specify
+ * the atom name of your ligand atom, then we'll search through "XYZ/N/*&#47;"
+ * (in other words, we'll search through all directories under "XYZ/N/"). If in
+ * addition to the previous rules you specify that the target of the interaction
+ * is on an Alanine, then the directories we'll search through must look like
+ * this: "XYZ/N/*&#47;ALA/".
+ * <p>
+ * The directory structure looks like this:
+ * 
+ * <pre>
+ * 	LigandGroup /
+ * 		LigandElement /
+ * 			LigandAtomName /
+ * 				TargetGroup / 
+ * 					TargetElement /
+ * 						TargetAtomName.ser
+ * </pre>
+
  * 
  * @author Ulysse Carion
  */
 public class DistanceDataTreeDirSearcher {
+	/**
+	 * Searches through the directory structure for distance results matching a
+	 * distance query. Searching is done starting from
+	 * {@link DistanceDataTreeSerializer#DIR_OUTPUT_FOLDER}.
+	 * <p>
+	 * See the javadocs for this class for implementation details.
+	 * 
+	 * @param q
+	 *            the distance query to find matches for
+	 * @return a list of all matching distance results
+	 */
 	public static List<DistanceResult> search(DistanceQuery q) {
 		List<DistanceResult> results = new ArrayList<>();
 
@@ -71,7 +106,7 @@ public class DistanceDataTreeDirSearcher {
 				.targetGroup("ALA").targetElement(Element.C).targetAtom("CA")
 				.build();
 		System.out.println(q);
-		
+
 		long start = System.nanoTime();
 		List<DistanceResult> r = search(q);
 		long stop = System.nanoTime();

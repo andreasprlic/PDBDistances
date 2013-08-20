@@ -11,6 +11,12 @@ import com.ulyssecarion.pdb.morgan.graph.GraphDriver.Atom;
 import com.ulyssecarion.pdb.morgan.graph.GraphDriver.ChemAxonAtom;
 import com.ulyssecarion.pdb.morgan.graph.GraphDriver.PDBAtom;
 
+/**
+ * Takes care of implementing Morgan's algorithm, and provides some methods for
+ * converting from ChemAxon to PDB molecules using Morgan's algorithm.
+ * 
+ * @author Ulysse Carion
+ */
 public class Morgan {
 	public static void main(String[] args) {
 		List<PDBAtom> pdbGraph = PDBGraphMaker.getGraph("TYR");
@@ -71,6 +77,11 @@ public class Morgan {
 		}
 	}
 
+	/**
+	 * This method is like {@link #getAtomNamesOfCMXAtom(Atom, List)}, but it
+	 * takes care of finding the ChemAxonAtom associated with the passed MolAtom
+	 * for you.
+	 */
 	public static List<String> getAtomNamesOfMolAtom(MolAtom molAtom,
 			List<ChemAxonAtom> cmxAtoms, List<PDBAtom> pdbGraph) {
 		for (ChemAxonAtom chemAxonAtom : cmxAtoms) {
@@ -78,7 +89,7 @@ public class Morgan {
 				return getAtomNamesOfCMXAtom(chemAxonAtom, pdbGraph);
 			}
 		}
-		
+
 		return null;
 	}
 

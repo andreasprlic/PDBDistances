@@ -28,7 +28,7 @@ public class DistanceResult implements Serializable {
 			Atom target) {
 		this(pdbID, distance, origin.getPDBserial(), target.getPDBserial());
 	}
-	
+
 	public String getPdbID() {
 		return pdbID;
 	}
@@ -51,12 +51,26 @@ public class DistanceResult implements Serializable {
 				+ ")";
 	}
 
+	/**
+	 * Converts this distance result into a string format for saving into a
+	 * file. You can convert this string back into a distance result with
+	 * {@link #parseSerializedResult(String)}.
+	 * 
+	 * @return a string representation of this distance result.
+	 */
 	public String toSerializedForm() {
 		int dist = (int) (distance * 10);
 
 		return pdbID + "~" + dist + "~" + origin + "~" + target;
 	}
 
+	/**
+	 * Parses a serialized distance result back into a distance result.
+	 * 
+	 * @param serializedForm
+	 *            the serialized form of the distance result
+	 * @return a distance result from the string passed.
+	 */
 	public static DistanceResult parseSerializedResult(String serializedForm) {
 		String[] parts = serializedForm.split("~");
 

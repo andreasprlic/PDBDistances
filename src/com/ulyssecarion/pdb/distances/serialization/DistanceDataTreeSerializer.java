@@ -61,7 +61,7 @@ public class DistanceDataTreeSerializer {
 	}
 
 	/**
-	 * Output in format:
+	 * Outputs to a file a distance result in the format:
 	 * 
 	 * <pre>
 	 * 	PDBID~DISTANCE~ORIGIN~TARGET
@@ -69,8 +69,9 @@ public class DistanceDataTreeSerializer {
 	 * 
 	 * (ORIGIN and TARGET are PDB atom serial numbers.)
 	 * 
-	 * @param result
-	 * @param path
+	 * @see DistanceResult#toSerializedForm()
+	 * @param result the distance result to serialize
+	 * @param path the path of the file to append to
 	 */
 	public static void serializeOneResult(DistanceResult result, String path) {
 		try {

@@ -39,6 +39,18 @@ import com.ulyssecarion.pdb.distances.serialization.DistanceDataTreeSerializer;
  * <p>
  * To go from serialized DistanceDataTrees to the directory structure, use the
  * aptly-named buildDirectoryFromSavedDataTrees(), which will do just that.
+ * <p>
+ * 
+ * The directory structure looks like this:
+ * 
+ * <pre>
+ * 	LigandGroup /
+ * 		LigandElement /
+ * 			LigandAtomName /
+ * 				TargetGroup / 
+ * 					TargetElement /
+ * 						TargetAtomName.ser
+ * </pre>
  * 
  * 
  * @author Ulysse Carion
@@ -182,19 +194,6 @@ public class DistanceDataTreeBuilderDriver {
 		}
 	}
 
-	/**
-	 * The directory structure looks like this:
-	 * 
-	 * <pre>
-	 * 	LigandGroup /
-	 * 		LigandElement /
-	 * 			LigandAtomName /
-	 * 				TargetGroup / 
-	 * 					TargetElement /
-	 * 						TargetAtomName.ser
-	 * </pre>
-	 * 
-	 */
 	private static void buildDirFor(List<DistanceResult> results, String path) {
 		// if (new File(path).exists()) {
 		// List<DistanceResult> prev = DistanceDataTreeSerializer
